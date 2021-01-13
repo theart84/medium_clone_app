@@ -25,7 +25,7 @@ const mutations = {
     state.isLoading = false;
     state.data = payload;
   },
-  [mutationTypes.getFeedStart](state) {
+  [mutationTypes.getFeedFailure](state) {
     state.isLoading = false;
   }
 };
