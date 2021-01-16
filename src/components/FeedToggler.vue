@@ -16,7 +16,7 @@
 
 <script>
 import {mapGetters} from 'vuex';
-import {getterType} from '@/store/modules/auth';
+import {getterTypes} from '@/store/modules/auth';
 export default {
   name: 'McvFeedToggler',
   props: {
@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isLoggedIn: getterType.isLoggedIn
+      isLoggedIn: getterTypes.isLoggedIn
     }),
     routeName() {
       return this.$route.name;

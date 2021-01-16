@@ -34,15 +34,15 @@
 
 <script>
 import {mapGetters} from 'vuex';
-import {getterType} from '@/store/modules/auth';
+import {getterTypes} from '@/store/modules/auth';
 
 export default {
   name: 'McvTopbar',
   computed: {
     ...mapGetters({
-      currentUser: getterType.currentUser,
-      isLoggedIn: getterType.isLoggedIn,
-      isAnonymous: getterType.isAnonymous
+      currentUser: getterTypes.currentUser,
+      isLoggedIn: getterTypes.isLoggedIn,
+      isAnonymous: getterTypes.isAnonymous
     })
   }
 }

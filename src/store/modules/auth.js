@@ -13,13 +13,28 @@ export const mutationTypes = {
   registerStart: '[auth] registerStart',
   registerSuccess: '[auth] registerSuccess',
   registerFailure: '[auth] registerFailure',
+
   loginStart: '[auth] loginStart',
   loginSuccess: '[auth] loginSuccess',
   loginFailure: '[auth] loginFailure',
 
   getCurrentUserStart: '[auth] getCurrentUserStart',
   getCurrentUserSuccess: '[auth] getCurrentUserSuccess',
-  getCurrentUserFailure: '[auth] getCurrentUserFailure'
+  getCurrentUserFailure: '[auth] getCurrentUserFailure',
+
+  updateCurrentUserStart: '[auth] updateCurrentUserStart',
+  updateCurrentUserSuccess: '[auth] updateCurrentUserSuccess',
+  updateCurrentUserFailure: '[auth] updateCurrentUserFailure',
+
+  logout: '[logout]'
+};
+
+export const actionTypes = {
+  register: '[auth] register',
+  login: '[auth] login',
+  getCurrentUser: '[auth] getCurrentUser',
+  updateCurrentUser: '[auth] updateCurrentUser',
+  logout: '[auth] logout'
 };
 
 const mutations = {
@@ -61,29 +76,34 @@ const mutations = {
     state.isLoading = false;
     state.isLoggedIn = false;
     state.currentUser = null;
+  },
+  [mutationTypes.updateCurrentUserStart]() {},
+  [mutationTypes.updateCurrentUserSuccess](state, payload) {
+    state.currentUser = payload;
+  },
+  [mutationTypes.updateCurrentUserFailure]() {},
+
+  [mutationTypes.logout](state) {
+    state.currentUser = null;
+    state.isLoggedIn = false;
   }
 };
-export const actionTypes = {
-  register: '[auth] register',
-  login: '[auth] login',
-  getCurrentUser: '[auth] getCurrentUser'
-};
 
-export const getterType = {
+export const getterTypes = {
   currentUser: '[auth] currentUser',
   isLoggedIn: '[auth] isLoggedIn',
   isAnonymous: '[auth] isAnonymous'
 };
 
 const getters = {
-  [getterType.currentUser]: state => {
+  [getterTypes.currentUser]: state => {
     return state.currentUser;
   },
-  [getterType.isLoggedIn]: state => {
+  [getterTypes.isLoggedIn]: state => {
     return Boolean(state.isLoggedIn);
   },
-  [getterType.isAnonymous]: state => {
-    return state.isAnonymous === false;
+  [getterTypes.isAnonymous]: state => {
+    return state.isLoggedIn === false;
   }
 };
 
@@ -130,6 +150,30 @@ const actions = {
         .catch(() => {
           commit(mutationTypes.getCurrentUserFailure);
         });
+    });
+  },
+  [actionTypes.updateCurrentUser]({commit}, {currentUserInput}) {
+    return new Promise(resolve => {
+      commit(mutationTypes.updateCurrentUserStart);
+      authApi
+        .updateCurrentUser(currentUserInput)
+        .then(user => {
+          commit(mutationTypes.updateCurrentUserSuccess, user);
+          resolve(user);
+        })
+        .catch(result => {
+          commit(
+            mutationTypes.updateCurrentUserFailure,
+            result.response.data.errors
+          );
+        });
+    });
+  },
+  [actionTypes.logout]({commit}) {
+    return new Promise(resolve => {
+      setItem('accessToken', '');
+      commit(mutationTypes.logout);
+      resolve();
     });
   }
 };
